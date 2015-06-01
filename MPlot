@@ -1,0 +1,20 @@
+Manhattan<-function(dir){
+
+  readFiles <- function(dir) {
+    setwd(dir)
+    files <- Sys.glob("*.txt")
+    listOfFiles <- lapply(files, function(x) read.table(x, header=TRUE))
+    return(listOfFiles)
+  }
+  
+  myfiles<-readFiles(dir)
+  pdf(file="Manhattan Plot.pdf")
+  for (i in 1:length(myfiles)){
+  
+    p<-qplot(myfiles[[i]]$GeneticDistance, -log(myfiles[[i]]$Pvalue), colour=myfiles[[i]]$Pvalue,
+size=myfiles[[i]]$SNPWeight, xlab="Genetic Distance", ylab="P-Value (-log)")
+    p + geom_point() + scale_colour_gradient(limits=c(0,0.05), low="blue", high="purple") +
+      geom_abline(intercept=-log(0.05), slope=0)}
+  dev.off()
+}
+  
